@@ -6,4 +6,6 @@ import com.mcc.domain.Customer;
 
 public interface CustomersRepository extends CrudRepository<Customer, Long> {
 
+	public Customer findByName(String name);
+	
 }

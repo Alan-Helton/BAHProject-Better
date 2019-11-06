@@ -63,7 +63,8 @@ public class CustomerAPI {
 		newCustomer = repo.save(newCustomer);
 		return ResponseEntity.ok().build();
 	}
-	@DeleteMapping
+	
+	@DeleteMapping("/{customerId}")
 	public ResponseEntity<?> deleteCustomer (@RequestBody Customer newCustomer,
 			@PathVariable("customerId") long customerId){
 		if (newCustomer.getId() != customerId
