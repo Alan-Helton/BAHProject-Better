@@ -12,6 +12,7 @@ import javax.persistence.Table;
 public class Event {
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	long id;
 	
 	@Column(name="EVENT_CODE")
