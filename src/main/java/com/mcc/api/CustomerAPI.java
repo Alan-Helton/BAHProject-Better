@@ -65,14 +65,8 @@ public class CustomerAPI {
 	}
 	
 	@DeleteMapping("/{customerId}")
-	public ResponseEntity<?> deleteCustomer (@RequestBody Customer newCustomer,
-			@PathVariable("customerId") long customerId){
-		if (newCustomer.getId() != customerId
-				|| newCustomer.getName()==null
-				|| newCustomer.getEmail()==null) {
-			return ResponseEntity.badRequest().build();
-		}
-		repo.deleteById(newCustomer.getId());
+	public ResponseEntity<?> deleteCustomer (@PathVariable("customerId") long customerId){
+		repo.deleteById(customerId);
 		return ResponseEntity.ok().build();
 	}
 }
