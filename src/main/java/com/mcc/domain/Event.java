@@ -21,15 +21,6 @@ public class Event {
 	String title;
 	String description;
 	
-	@Column(name="EVENT_DATE")
-	String date;
-	
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
 	public long getId() {
 		return id;
 	}

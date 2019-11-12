@@ -1,5 +1,7 @@
 package com.mcc.domain;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,10 +18,13 @@ public class Registration {
 	long id;
 	
 	@Column(name="CUSTOMER_ID")
-	String customerId;
+	int customerId;
 	
-	String eventId;
-	int date;
+	@Column(name="EVENT_ID")
+	int eventId;
+	
+	@Column(name="REGISTRATION_DATE")
+	Date date;
 	String notes;
 	
 	public long getId() {
@@ -28,22 +33,22 @@ public class Registration {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getCustomerId() {
+	public int getCustomerId() {
 		return customerId;
 	}
-	public void setCustomerId(String customerId) {
+	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
-	public String getEventId() {
+	public int getEventId() {
 		return eventId;
 	}
-	public void setEventId(String eventId) {
+	public void setEventId(int eventId) {
 		this.eventId = eventId;
 	}
-	public int getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(int date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public String getNotes() {
