@@ -3,6 +3,8 @@ package com.mcc.api;
 import java.net.URI;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,9 +33,15 @@ public class CustomerAPI {
 		return repo.findAll();		
 	}
 	
-	@GetMapping("/{customerId}")
+	@GetMapping("/id/{customerId}")
 	public Optional<Customer> getCustomerById(@PathVariable("customerId")long id){
 		return repo.findById(id);
+	}
+	
+	@GetMapping("/{customerName}")
+	public Optional<Customer> getCustomerByName(@PathVariable("customerName")String name){
+		return repo.findByName(name);
+		
 	}
 	
 	@PostMapping
@@ -64,9 +72,22 @@ public class CustomerAPI {
 		return ResponseEntity.ok().build();
 	}
 	
-	@DeleteMapping("/{customerId}")
+	@DeleteMapping("/id/{customerId}")
 	public ResponseEntity<?> deleteCustomer (@PathVariable("customerId") long customerId){
 		repo.deleteById(customerId);
 		return ResponseEntity.ok().build();
+	}
+	
+	@Transactional
+	@DeleteMapping("/{customerName}")
+	public ResponseEntity<?> deleteByName (@PathVariable("customerName") String name) {
+		long ret = repo.deleteByName(name);
+		if (ret < 1) {
+			return ResponseEntity.badRequest().build();			
+		}
+		else {
+			return ResponseEntity.ok().build();
+		}
+		
 	}
 }
