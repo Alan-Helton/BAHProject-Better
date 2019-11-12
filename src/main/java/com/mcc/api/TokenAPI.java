@@ -7,6 +7,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.api.Authenticator;
+import com.mcc.util.JWTHelper;
+
+import com.example.api.Token;
+import com.example.api.TokenRequestData;
+
 public class TokenAPI {
+		JWTUtil jwtUtil = new JWTHelper();
+		
+		@PostMapping(consumes = "application/json")
+		public ResponseEntity<?> getToken(@RequestBody TokenRequestData tokenRequestData) {
+			
+			String username = tokenRequestData.getUsername();
+			String password = tokenRequestData.getPassword();
+			String scopes = tokenRequestData.getScopes();
+			
+			if (username != null && username.length() > 0 
+					&& password != null && password.length() > 0 
+					&& Authenticator.checkPassword(username, password)) {
+				Token token = jwtUtil.createToken(scopes);
+				ResponseEntity<?> response = ResponseEntity.ok(token);
+				return response;			
+			}
+			// bad request
+			return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+		}
+		
+		
+	}
 
 }
