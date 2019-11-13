@@ -18,78 +18,42 @@ import com.mcc.util.JWTHelper;
 import com.mcc.logging.ApiLogger;
 
 @Component
-@Order(1)
-public class AuthFilter {
+public class AuthFilter implements Filter {
 
-	//public static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-	private String auth_scope = "com.webage.auth.apis";
-	private String api_scope = "com.webage.data.apis";
+	// JWTUtil jwtUtil = new JWTMockUtil();
+	JWTHelper jwtUtil = new JWTHelper();
+	
+	private String api_scope = "com.mcc.api";
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// get authorization header
+
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		String uri = req.getRequestURI();
-		
-		
-		// for development purposes
-		// allow turning off auth checking with header tokencheck:false
-		String tokenheader = req.getHeader("tokencheck");
-		if( tokenheader != null && !tokenheader.equalsIgnoreCase("true") ) {
+		if (uri.startsWith("/token")) {
+			// continue on to get-token endpoint
 			chain.doFilter(request, response);
-			return;		
-		}
-		
-		// auth checking will not apply to these cases
-		// token endpoint
-		// user register endpoint
-		// healthcheck endpoint on '/api/'
-		if(   !uri.startsWith("/api/events") 
-	       && !uri.startsWith("/api/registrations")
-	       && !uri.equals("/api/customers")
-	       ) {
-			chain.doFilter(request, response);
-			return;			
-		}else{
+			return;
+		} else {
 			// check JWT token
 			String authheader = req.getHeader("authorization");
-			if(authheader != null && authheader.length() > 7 && authheader.startsWith("Bearer")) {
+			if (authheader != null && authheader.length() > 7 && authheader.startsWith("Bearer")) {
 				String jwt_token = authheader.substring(7, authheader.length());
-				if(JWTHelper.verifyToken(jwt_token)) {
-					String request_scopes = JWTHelper.getScopes(jwt_token);
-					if(request_scopes.contains(api_scope) || request_scopes.contains(auth_scope)) {
+				if (jwtUtil.verifyToken(jwt_token)) {
+					String request_scopes = jwtUtil.getScopes(jwt_token);
+					if (request_scopes.contains(api_scope)) {
+						// continue on to api
 						chain.doFilter(request, response);
 						return;
 					}
 				}
 			}
-		}		
-		// continue
+		}
+
+		// reject request and return error instead of data
 		res.sendError(HttpServletResponse.SC_FORBIDDEN, "failed authentication");
-
-	}
-	
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		ApiLogger.log("AuthFilter.init");
-		
 	}
 
-	@Override
-	public void destroy() {
-		ApiLogger.log("AuthFilter.destroy");	
-	}
-
-	/*
-	 * public boolean verifyToken(String token) { try {
-	 * Jwts.parser().setSigningKey(key).parseClaimsJws(token); return true; } catch
-	 * (JwtException e) { return false; } }
-	 * 
-	 * public String getScopes(String token) { try { Claims claims =
-	 * Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody(); String
-	 * scopes = claims.get("scopes", String.class); return scopes; } catch
-	 * (JwtException e) { return null; } }
-	 */	
-	
 }

@@ -10,12 +10,12 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.mcc.domain.Token;
 
 public class JWTHelper {
-	/*
-	 * https://github.com/auth0/java-jwt
-	 */
-	public static String createToken(String scopes) {
+	
+	
+	public static Token createToken(String scopes) {
 		
 		try {
 		    Algorithm algorithm = Algorithm.HMAC256("secret");
@@ -27,13 +27,14 @@ public class JWTHelper {
 		        .withClaim("scopes", scopes)
 		        .withExpiresAt(expireDate)
 		        .sign(algorithm);
-		    return token;
+		    return new Token(token);
 		} catch (JWTCreationException exception){
 			return null;
 		}	
 	}
 
-	public static boolean verifyToken(String token) {
+	
+	public boolean verifyToken(String token) {
 
 		try {
 		    Algorithm algorithm = Algorithm.HMAC256("secret");
@@ -48,7 +49,7 @@ public class JWTHelper {
 		
 	}
 
-	public static Map<String, Claim> getClaims(String token) {
+	public Map<String, Claim> getClaims(String token) {
 		try {
 		    Algorithm algorithm = Algorithm.HMAC256("secret");
 		    JWTVerifier verifier = JWT.require(algorithm)
@@ -61,7 +62,8 @@ public class JWTHelper {
 		}
 	}
 	
-	public static String getScopes(String token) {
+	
+	public String getScopes(String token) {
 		try {
 		    Algorithm algorithm = Algorithm.HMAC256("secret");
 		    JWTVerifier verifier = JWT.require(algorithm)
@@ -74,3 +76,4 @@ public class JWTHelper {
 		}
 	}
 }
+
