@@ -1,6 +1,7 @@
 package com.mcc.api;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.mcc.domain.Customer;
 import com.mcc.domain.Event;
 import com.mcc.repository.EventsRepository;
 
@@ -28,6 +30,11 @@ public class EventAPI {
 	@GetMapping
 	public Iterable<Event> getAll(){
 		return repo.findAll();
+	}
+	
+	@GetMapping("/{id}")
+	public Optional<Event> getEvent(@PathVariable("id")long id){
+		return repo.findById(id);
 	}
 	
 	@PostMapping
